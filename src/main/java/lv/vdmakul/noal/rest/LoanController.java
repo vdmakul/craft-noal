@@ -3,6 +3,7 @@ package lv.vdmakul.noal.rest;
 import lv.vdmakul.noal.domain.Loan;
 import lv.vdmakul.noal.domain.transfer.LoanTO;
 import lv.vdmakul.noal.service.LoanRepository;
+import lv.vdmakul.noal.service.application.LoanApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,16 +22,15 @@ import java.util.stream.Collectors;
 public class LoanController {
 
     @Autowired private LoanRepository loanRepository;
+    @Autowired private LoanApplicationService loanApplicationService;
 
     @RequestMapping(value = "/loan/apply", method = RequestMethod.POST)
     public LoanTO createLoan(@RequestParam("amount") BigDecimal amount,
                              @RequestParam("term") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate term) {
-        LocalDateTime termDatTime = LocalDateTime.of(term, LocalTime.MAX);
-        Loan loan = new Loan(amount, termDatTime);
-        loanRepository.save(loan);
+
+        Loan loan = loanApplicationService.applyLoan(amount, term);
         return loan.toTransferObject();
     }
-
 
     @RequestMapping(value = "/loans", method = RequestMethod.GET)
     public List<LoanTO> findAll() {
