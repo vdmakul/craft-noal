@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,11 +40,25 @@ public class LoanControllerTest {
     @Test
     public void shouldCreateLoan() throws Exception {
         mockMvc.perform(
-                post("/loan/create?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("amount").value(123.45))
                 .andExpect(jsonPath("term").value("2014-01-01"));
+    }
+
+    @Test
+    public void shouldSearchAll() throws Exception {
+        mockMvc.perform(
+                post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(
+                get("/loans").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("[0].amount").value(123.45))
+                .andExpect(jsonPath("[0].term").value("2014-01-01"));
     }
 
 }

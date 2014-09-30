@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan("lv.vdmakul.noal.rest")
+@ComponentScan({"lv.vdmakul.noal.rest", "lv.vdmakul.noal.service"})
 public class WebApp {
 }
