@@ -1,9 +1,9 @@
 package lv.vdmakul.noal.rest;
 
+import com.jayway.jsonpath.JsonPath;
 import lv.vdmakul.noal.config.PersistenceConfig;
 import lv.vdmakul.noal.config.WebApp;
 import lv.vdmakul.noal.domain.repository.LoanApplicationRepository;
-import lv.vdmakul.noal.domain.repository.LoanRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +15,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,14 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebApp.class, PersistenceConfig.class})
 @WebAppConfiguration
-public class LoanControllerTest {
+public class LoanApplicationControllerTest {
 
     MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
-    @Autowired
-    private LoanRepository loanRepository;
     @Autowired
     private LoanApplicationRepository loanApplicationRepository;
 
@@ -52,37 +51,50 @@ public class LoanControllerTest {
     }
 
     @Test
-    public void shouldCreateLoan() throws Exception {
+    public void shouldReturnEmptyList() throws Exception {
+        mockMvc.perform(
+                get("/applications").accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldFindApplicationAfterAcceptedLoanApplication() throws Exception {
         mockMvc.perform(
                 post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        ResultActions asd = mockMvc.perform(
+                get("/applications").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("[0].amount").value(123.45))
+                .andExpect(jsonPath("[0].term").value("2014-01-01"))
+                .andExpect(jsonPath("[0].loanId", notNullValue()));
+
+        Integer loanId = JsonPath.read(asd.andReturn().getResponse().getContentAsString(), "[0].loanId");
+        mockMvc.perform(
+                get("/loan/" + loanId).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("amount").value(123.45))
                 .andExpect(jsonPath("term").value("2014-01-01"));
     }
 
     @Test
-    public void shouldSearchAll() throws Exception {
+    public void shouldFindApplicationAfterRejectedLoanApplication() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=1000000000.01&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                get("/loans").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                get("/applications").accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("[0].amount").value(123.45))
-                .andExpect(jsonPath("[0].term").value("2014-01-01"));
+                .andExpect(jsonPath("[0].amount").value(1000000000.01))
+                .andExpect(jsonPath("[0].term").value("2014-01-01"))
+                .andExpect(jsonPath("[0].loanId", nullValue()));
     }
-
-    @Test
-    public void shouldCorrectlyHandleError() throws Exception {
-        mockMvc.perform(
-                post("/loan/apply?amount=1000000000.01&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("errorCode").value("errorCode"));
-    }
-
 }

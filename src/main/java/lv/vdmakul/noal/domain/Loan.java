@@ -5,6 +5,7 @@ import lv.vdmakul.noal.domain.transfer.LoanTO;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +19,8 @@ public class Loan {
 
     protected BigDecimal amount;
     protected LocalDateTime term;
+    @OneToOne
+    protected LoanApplication loanApplication;
 
     protected Loan() {
     }

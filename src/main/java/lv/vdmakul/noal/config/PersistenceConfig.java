@@ -15,7 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "lv.vdmakul.noal.service")
+@EnableJpaRepositories(basePackages = "lv.vdmakul.noal.domain.repository")
 public class PersistenceConfig {
 
     @Bean

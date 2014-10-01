@@ -1,8 +1,8 @@
 package lv.vdmakul.noal.rest;
 
 import lv.vdmakul.noal.domain.Loan;
+import lv.vdmakul.noal.domain.repository.LoanRepository;
 import lv.vdmakul.noal.domain.transfer.LoanTO;
-import lv.vdmakul.noal.service.LoanRepository;
 import lv.vdmakul.noal.service.application.LoanApplicationService;
 import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,12 @@ public class LoanController {
 
     @Autowired private LoanRepository loanRepository;
     @Autowired private LoanApplicationService loanApplicationService;
+
+    @RequestMapping(value = "/loan/{id}", method = RequestMethod.GET)
+    public LoanTO findLoan(@PathVariable("id") Long loanId) {
+        Loan loan = loanRepository.findOne(loanId);
+        return loan.toTransferObject(); //todo check for null
+    }
 
     @RequestMapping(value = "/loan/apply", method = RequestMethod.POST)
     public LoanTO createLoan(@RequestParam("amount") BigDecimal amount,
