@@ -4,17 +4,15 @@ import lv.vdmakul.noal.domain.Loan;
 import lv.vdmakul.noal.domain.transfer.LoanTO;
 import lv.vdmakul.noal.service.LoanRepository;
 import lv.vdmakul.noal.service.application.LoanApplicationService;
+import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,4 +36,13 @@ public class LoanController {
                 .map(Loan::toTransferObject)
                 .collect(Collectors.toList());
     }
+
+
+    @ExceptionHandler(RiskAnalysisFailException.class)
+    @ResponseStatus(value= HttpStatus.OK)
+    @ResponseBody
+    public ErrorInfo handleRiskAnalysisFailException(HttpServletRequest req, RiskAnalysisFailException ex) {
+        return new ErrorInfo(ex.getMessage(), ex.getErrorCode());
+    }
+
 }

@@ -5,6 +5,7 @@ import lv.vdmakul.noal.domain.LoanApplication;
 import lv.vdmakul.noal.service.LoanRepository;
 import lv.vdmakul.noal.service.application.analyser.AnalysisResult;
 import lv.vdmakul.noal.service.application.analyser.ApplicationRiskAnalyzer;
+import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class LoanApplicationService {
             loanRepository.save(loan);
             return loan;
         } else {
-            throw new RuntimeException(analysisResult.getErrorCode());
+            throw new RiskAnalysisFailException(analysisResult.getErrorCode());
         }
     }
 

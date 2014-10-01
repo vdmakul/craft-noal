@@ -2,6 +2,7 @@ package lv.vdmakul.noal.rest;
 
 import lv.vdmakul.noal.config.WebApp;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -59,6 +60,15 @@ public class LoanControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("[0].amount").value(123.45))
                 .andExpect(jsonPath("[0].term").value("2014-01-01"));
+    }
+
+    @Test
+    public void shouldCorrectlyHandleError() throws Exception {
+        mockMvc.perform(
+                post("/loan/apply?amount=1000000000.01&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("errorCode").value("errorCode"));
     }
 
 }
