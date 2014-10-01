@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 public class LoanController {
@@ -32,11 +33,11 @@ public class LoanController {
 
     @RequestMapping(value = "/loans", method = RequestMethod.GET)
     public List<LoanTO> findAll() {
-        return loanRepository.findAll().stream()
+        Iterable<Loan> all = loanRepository.findAll();
+        return StreamSupport.stream(all.spliterator(), false)
                 .map(Loan::toTransferObject)
                 .collect(Collectors.toList());
     }
-
 
     @ExceptionHandler(RiskAnalysisFailException.class)
     @ResponseStatus(value= HttpStatus.OK)

@@ -1,6 +1,8 @@
 package lv.vdmakul.noal.rest;
 
+import lv.vdmakul.noal.config.PersistenceConfig;
 import lv.vdmakul.noal.config.WebApp;
+import lv.vdmakul.noal.service.LoanRepository;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,20 +24,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebApp.class})
+@ContextConfiguration(classes = {WebApp.class, PersistenceConfig.class})
 @WebAppConfiguration
 public class LoanControllerTest {
 
     MockMvc mockMvc;
 
     @Autowired
-    WebApplicationContext context;
+    private WebApplicationContext context;
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        loanRepository.deleteAll();
     }
 
     @Test

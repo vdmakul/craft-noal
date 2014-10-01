@@ -2,14 +2,25 @@ package lv.vdmakul.noal.domain;
 
 import lv.vdmakul.noal.domain.transfer.LoanTO;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 public class Loan {
 
-    private final BigDecimal amount;
-    private final LocalDateTime term;
+    @Id
+    @GeneratedValue
+    protected Long id;
+
+    protected BigDecimal amount;
+    protected LocalDateTime term;
+
+    protected Loan() {
+    }
 
     public Loan(BigDecimal amount, LocalDateTime term) {
         this.amount = amount;
