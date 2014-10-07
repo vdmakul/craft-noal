@@ -25,14 +25,14 @@ public class LoanApplicationService {
     @Autowired
     private ApplicationRiskAnalyzer riskAnalyzer;
 
-    public Loan applyLoan(BigDecimal amount, LocalDate term) {
+    public Loan applyLoan(BigDecimal amount, LocalDate term, String userLogin) {
         LocalDateTime termDatTime = LocalDateTime.of(term, LocalTime.MAX);
 
-        LoanApplication application = new LoanApplication(amount, termDatTime);
+        LoanApplication application = new LoanApplication(amount, termDatTime, userLogin);
 
         AnalysisResult analysisResult = riskAnalyzer.isAcceptable(application);
         if (analysisResult.isValid()) {
-            Loan loan = new Loan(amount, termDatTime);
+            Loan loan = new Loan(amount, termDatTime, userLogin);
             loanRepository.save(loan);
             application.setLoan(loan);
             loanApplicationRepository.save(application);

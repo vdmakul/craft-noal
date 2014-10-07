@@ -4,6 +4,7 @@ import com.jayway.jsonpath.JsonPath;
 import lv.vdmakul.noal.config.PersistenceConfig;
 import lv.vdmakul.noal.config.WebApp;
 import lv.vdmakul.noal.domain.repository.LoanApplicationRepository;
+import lv.vdmakul.noal.domain.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +38,14 @@ public class LoanApplicationControllerTest {
     private WebApplicationContext context;
     @Autowired
     private LoanApplicationRepository loanApplicationRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+
+        userRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }

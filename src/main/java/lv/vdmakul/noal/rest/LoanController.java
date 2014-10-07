@@ -8,6 +8,7 @@ import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +21,10 @@ import java.util.stream.StreamSupport;
 @RestController
 public class LoanController {
 
-    @Autowired private LoanRepository loanRepository;
-    @Autowired private LoanApplicationService loanApplicationService;
+    @Autowired
+    private LoanRepository loanRepository;
+    @Autowired
+    private LoanApplicationService loanApplicationService;
 
     @RequestMapping(value = "/loan/{id}", method = RequestMethod.GET)
     public LoanTO findLoan(@PathVariable("id") Long loanId) {
@@ -31,9 +34,10 @@ public class LoanController {
 
     @RequestMapping(value = "/loan/apply", method = RequestMethod.POST)
     public LoanTO createLoan(@RequestParam("amount") BigDecimal amount,
-                             @RequestParam("term") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate term) {
+                             @RequestParam("term") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate term,
+                             Authentication authentication) {
 
-        Loan loan = loanApplicationService.applyLoan(amount, term);
+        Loan loan = loanApplicationService.applyLoan(amount, term, authentication.getName());
         return loan.toTransferObject();
     }
 
@@ -46,7 +50,7 @@ public class LoanController {
     }
 
     @ExceptionHandler(RiskAnalysisFailException.class)
-    @ResponseStatus(value= HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public ErrorInfo handleRiskAnalysisFailException(HttpServletRequest req, RiskAnalysisFailException ex) {
         return new ErrorInfo(ex.getMessage(), ex.getErrorCode());

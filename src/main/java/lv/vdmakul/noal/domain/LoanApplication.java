@@ -17,13 +17,15 @@ public class LoanApplication {
     protected LocalDateTime term;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     protected Loan loan;
+    protected String userLogin;
 
     protected LoanApplication() {
     }
 
-    public LoanApplication(BigDecimal amount, LocalDateTime term) {
+    public LoanApplication(BigDecimal amount, LocalDateTime term, String userLogin) {
         this.amount = amount;
         this.term = term;
+        this.userLogin = userLogin;
     }
 
     public BigDecimal getAmount() {
