@@ -15,6 +15,8 @@ public class LoanApplication {
     protected Long id;
     protected BigDecimal amount;
     protected LocalDateTime term;
+    protected LocalDateTime applicationTime;
+    protected String ipAddress;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     protected Loan loan;
     protected String userAccount;
@@ -22,10 +24,12 @@ public class LoanApplication {
     protected LoanApplication() {
     }
 
-    public LoanApplication(BigDecimal amount, LocalDateTime term, String userAccount) {
+    public LoanApplication(BigDecimal amount, LocalDateTime term, LocalDateTime applicationTime, String userAccount, String ipAddress) {
         this.amount = amount;
         this.term = term;
         this.userAccount = userAccount;
+        this.applicationTime = applicationTime;
+        this.ipAddress = ipAddress;
     }
 
     public BigDecimal getAmount() {
@@ -38,6 +42,18 @@ public class LoanApplication {
 
     public Loan getLoan() {
         return loan;
+    }
+
+    public LocalDateTime getApplicationTime() {
+        return applicationTime;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public String getUserAccount() {
+        return userAccount;
     }
 
     public void setLoan(Loan loan) {

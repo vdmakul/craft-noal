@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class LoanApplicationService {
@@ -25,10 +26,11 @@ public class LoanApplicationService {
     @Autowired
     private ApplicationRiskAnalyzer riskAnalyzer;
 
-    public Loan applyLoan(BigDecimal amount, LocalDate term, String userLogin) {
+    //todo extract class with user info
+    public Loan applyLoan(BigDecimal amount, LocalDate term, String userLogin, String ipAddress) {
         LocalDateTime termDatTime = LocalDateTime.of(term, LocalTime.MAX);
 
-        LoanApplication application = new LoanApplication(amount, termDatTime, userLogin);
+        LoanApplication application = new LoanApplication(amount, termDatTime, LocalDateTime.now(), userLogin, ipAddress);
 
         AnalysisResult analysisResult = riskAnalyzer.isAcceptable(application);
         if (analysisResult.isValid()) {
@@ -41,6 +43,10 @@ public class LoanApplicationService {
             loanApplicationRepository.save(application);
             throw new RiskAnalysisFailException(analysisResult.getErrorCode());
         }
+    }
+
+    public List<LoanApplication> findUserApplication(String accountName, LocalDateTime from, LocalDateTime till) {
+         return loanApplicationRepository.findByIpAddressAndPeriod(accountName, from, till);
     }
 
 }

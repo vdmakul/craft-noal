@@ -6,6 +6,6 @@ import lv.vdmakul.noal.service.application.analyser.AnalysisResult;
 
 public interface ValidationRule  {
 
-    AnalysisResult isValid(LoanApplication application);
+    AnalysisResult analyze(LoanApplication application);
 
 }

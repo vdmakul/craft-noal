@@ -65,7 +65,7 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
     @Test
     public void shouldFindApplicationAfterAcceptedLoanApplication() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01")
+                post("/loan/apply?amount=12.34&term=2014-01-01")
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -77,7 +77,7 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("[0].amount").value(123.45))
+                .andExpect(jsonPath("[0].amount").value(12.34))
                 .andExpect(jsonPath("[0].term").value("2014-01-01"))
                 .andExpect(jsonPath("[0].loanId", notNullValue()));
 
@@ -87,7 +87,7 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("amount").value(123.45))
+                .andExpect(jsonPath("amount").value(12.34))
                 .andExpect(jsonPath("term").value("2014-01-01"));
     }
 

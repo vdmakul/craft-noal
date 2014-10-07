@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +38,8 @@ public class LoanController {
                              @RequestParam("term") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate term,
                              Authentication authentication) {
 
-        Loan loan = loanApplicationService.applyLoan(amount, term, authentication.getName());
+        WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+        Loan loan = loanApplicationService.applyLoan(amount, term, authentication.getName(), details.getRemoteAddress());
         return loan.toTransferObject();
     }
 

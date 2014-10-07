@@ -11,11 +11,11 @@ import java.util.List;
 public class ApplicationRiskAnalyzer {
 
     @Autowired
-    private List<ValidationRule> validationRules; //fixme: order undefined
+    private List<ValidationRule> validationRules;
 
     public AnalysisResult isAcceptable(LoanApplication application) {
         for (ValidationRule rule : validationRules) {
-            AnalysisResult result = rule.isValid(application);
+            AnalysisResult result = rule.analyze(application);
             if (!result.isValid()) {
                 return result;
             }

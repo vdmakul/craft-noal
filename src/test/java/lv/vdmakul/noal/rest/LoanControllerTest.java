@@ -55,19 +55,19 @@ public class LoanControllerTest extends SecurityEnabledControllerTest {
     @Test
     public void shouldCreateLoan() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01")
+                post("/loan/apply?amount=12.34&term=2014-01-01")
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("amount").value(123.45))
+                .andExpect(jsonPath("amount").value(12.34))
                 .andExpect(jsonPath("term").value("2014-01-01"));
     }
 
     @Test
     public void shouldSearchAll() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01")
+                post("/loan/apply?amount=12.34&term=2014-01-01")
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -79,19 +79,19 @@ public class LoanControllerTest extends SecurityEnabledControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("[0].amount").value(123.45))
+                .andExpect(jsonPath("[0].amount").value(12.34))
                 .andExpect(jsonPath("[0].term").value("2014-01-01"));
     }
 
     @Test
     public void shouldCorrectlyHandleError() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=1000000000.01&term=2014-01-01")
+                post("/loan/apply?amount=123.45&term=2014-01-01")
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("errorCode").value("errorCode"));
+                .andExpect(jsonPath("errorCode").value("Maximum allowed amount is 100"));
     }
 
 }
