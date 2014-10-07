@@ -4,7 +4,6 @@ import com.jayway.jsonpath.JsonPath;
 import lv.vdmakul.noal.config.PersistenceConfig;
 import lv.vdmakul.noal.config.WebApp;
 import lv.vdmakul.noal.domain.repository.LoanApplicationRepository;
-import lv.vdmakul.noal.domain.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebApp.class, PersistenceConfig.class})
 @WebAppConfiguration
-public class LoanApplicationControllerTest {
+public class LoanApplicationControllerTest extends SecurityEnabledControllerTest {
 
     MockMvc mockMvc;
 
@@ -38,14 +37,11 @@ public class LoanApplicationControllerTest {
     private WebApplicationContext context;
     @Autowired
     private LoanApplicationRepository loanApplicationRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
-
-        userRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
@@ -58,7 +54,9 @@ public class LoanApplicationControllerTest {
     @Test
     public void shouldReturnEmptyList() throws Exception {
         mockMvc.perform(
-                get("/applications").accept(MediaType.APPLICATION_JSON))
+                get("/applications")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -67,11 +65,15 @@ public class LoanApplicationControllerTest {
     @Test
     public void shouldFindApplicationAfterAcceptedLoanApplication() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=123.45&term=2014-01-01")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         ResultActions asd = mockMvc.perform(
-                get("/applications").accept(MediaType.APPLICATION_JSON))
+                get("/applications")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -81,7 +83,9 @@ public class LoanApplicationControllerTest {
 
         Integer loanId = JsonPath.read(asd.andReturn().getResponse().getContentAsString(), "[0].loanId");
         mockMvc.perform(
-                get("/loan/" + loanId).accept(MediaType.APPLICATION_JSON))
+                get("/loan/" + loanId)
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("amount").value(123.45))
                 .andExpect(jsonPath("term").value("2014-01-01"));
@@ -90,11 +94,15 @@ public class LoanApplicationControllerTest {
     @Test
     public void shouldFindApplicationAfterRejectedLoanApplication() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=1000000000.01&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=1000000000.01&term=2014-01-01")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                get("/applications").accept(MediaType.APPLICATION_JSON))
+                get("/applications")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))

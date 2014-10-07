@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {WebApp.class, PersistenceConfig.class})
 @WebAppConfiguration
-public class LoanControllerTest {
+public class LoanControllerTest extends SecurityEnabledControllerTest {
 
     MockMvc mockMvc;
 
@@ -41,6 +41,7 @@ public class LoanControllerTest {
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -54,7 +55,9 @@ public class LoanControllerTest {
     @Test
     public void shouldCreateLoan() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=123.45&term=2014-01-01")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("amount").value(123.45))
@@ -64,11 +67,15 @@ public class LoanControllerTest {
     @Test
     public void shouldSearchAll() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=123.45&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=123.45&term=2014-01-01")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(
-                get("/loans").accept(MediaType.APPLICATION_JSON))
+                get("/loans")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -79,7 +86,9 @@ public class LoanControllerTest {
     @Test
     public void shouldCorrectlyHandleError() throws Exception {
         mockMvc.perform(
-                post("/loan/apply?amount=1000000000.01&term=2014-01-01").accept(MediaType.APPLICATION_JSON))
+                post("/loan/apply?amount=1000000000.01&term=2014-01-01")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("errorCode").value("errorCode"));
