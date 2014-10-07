@@ -11,14 +11,14 @@ public class UserController {
 
     @Autowired private UserService userService;
 
-    @RequestMapping(value = "/user/{account}", method = RequestMethod.GET)
-    public UserTO findUser(@PathVariable("account") String accountName) {
+    @RequestMapping(value = "/user/{userAccount}", method = RequestMethod.GET)
+    public UserTO findUser(@PathVariable("userAccount") String accountName) {
         User user = userService.find(accountName);
         return user.toTransferObject();
     }
 
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
-    public UserTO createUser(@RequestParam("account") String accountName,
+    public UserTO createUser(@RequestParam("userAccount") String accountName,
                              @RequestParam("name") String name,
                              @RequestParam("password") String password) {
         User user = userService.createUser(accountName, name, password);

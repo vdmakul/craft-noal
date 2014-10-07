@@ -21,15 +21,15 @@ public class Loan {
     protected LocalDateTime term;
     @OneToOne
     protected LoanApplication loanApplication;
-    protected String userLogin;
+    protected String userAccount;
 
     protected Loan() {
     }
 
-    public Loan(BigDecimal amount, LocalDateTime term, String userLogin) {
+    public Loan(BigDecimal amount, LocalDateTime term, String userAccount) {
         this.amount = amount;
         this.term = term;
-        this.userLogin = userLogin;
+        this.userAccount = userAccount;
     }
 
     public BigDecimal getAmount() {
