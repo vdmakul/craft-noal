@@ -28,6 +28,7 @@ dependencies {
     compile 'org.springframework:spring-web:4.1.0.RELEASE'
 
     compile 'com.h2database:h2'
+    compile 'mysql:mysql-connector-java:5.1.33'
 
     compile 'org.springframework.boot:spring-boot-starter-security'
 
