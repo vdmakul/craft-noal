@@ -15,6 +15,8 @@ import java.util.List;
 @Order(3)
 public class ApplicationCountPerDayValidation implements ValidationRule {
 
+    public static final String ERROR_CODE = "loan.application.max.count.for.period";
+
     @Autowired
     protected LoanApplicationService loanApplicationService;
 
@@ -34,7 +36,7 @@ public class ApplicationCountPerDayValidation implements ValidationRule {
         long count = applications.stream().filter(app -> ipAddress.equals(app.getIpAddress())).count();
 
         if (count > maxApplicationCount) {
-            return AnalysisResult.invalid("Max application count reached"); //todo externalize messages
+            return AnalysisResult.invalid(ERROR_CODE);
         } else {
             return AnalysisResult.valid();
         }

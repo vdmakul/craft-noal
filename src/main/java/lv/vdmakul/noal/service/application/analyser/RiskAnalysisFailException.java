@@ -4,13 +4,9 @@ public class RiskAnalysisFailException extends RuntimeException {
 
     private final String errorCode;
 
-    public RiskAnalysisFailException(String errorCode) {
-        super(messageFormErrorCode(errorCode));
+    public RiskAnalysisFailException(String errorCode, String errorMessage) {
+        super(errorMessage);
         this.errorCode = errorCode;
-    }
-
-    private static String messageFormErrorCode(String errorCode) {
-        return "Message for error code " + errorCode; //todo implement
     }
 
     public String getErrorCode() {

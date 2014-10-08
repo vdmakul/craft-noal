@@ -22,7 +22,7 @@ public class UserService {
 
     public User createUser(String account, String name, String password) {
         if (userRepository.findOne(account) != null) {
-            throw new UserCreationException("User '" + account + " already exists");
+            throw new UserCreationException("User '" + account + "' already exists");
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encodedPass = encoder.encode(password);

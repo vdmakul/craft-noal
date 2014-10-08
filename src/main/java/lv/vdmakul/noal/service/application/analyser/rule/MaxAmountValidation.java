@@ -13,13 +13,15 @@ import java.math.BigDecimal;
 @Order(1)
 public class MaxAmountValidation implements ValidationRule {
 
+    public static final String ERROR_CODE = "loan.application.max.amount";
+
     @Value("${loan.analysis.application.max.amount}")
     protected BigDecimal maxAmount;
 
     @Override
     public AnalysisResult analyze(LoanApplication application) {
         if (maxAmount.compareTo(application.getAmount()) < 0) {
-            return AnalysisResult.invalid("Maximum allowed amount is " + maxAmount); //fixme and externalize messages
+            return AnalysisResult.invalid(ERROR_CODE, maxAmount);
         } else {
             return AnalysisResult.valid();
         }

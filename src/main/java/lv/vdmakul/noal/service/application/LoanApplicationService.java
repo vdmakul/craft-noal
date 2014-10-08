@@ -23,7 +23,6 @@ public class LoanApplicationService {
 
     @Value("${loan.extension.days}")
     protected int defaultLoanExtensionDays;
-//    protected BigDecimal defaultLoanInterest; //todo apply interest to initial amount?
     @Value("${loan.extension.interest}")
     protected BigDecimal defaultExtensionInterest;
 
@@ -60,8 +59,14 @@ public class LoanApplicationService {
             return loan;
         } else {
             loanApplicationRepository.save(application);
-            throw new RiskAnalysisFailException(analysisResult.getErrorCode());
+            throw createRiskAnalysisFailureException(analysisResult);
         }
+    }
+
+    private RiskAnalysisFailException createRiskAnalysisFailureException(AnalysisResult analysisResult) {
+        String errorCode = analysisResult.getErrorCode();
+        String errorMessage = riskAnalyzer.getErrorMessage(analysisResult);
+        return new RiskAnalysisFailException(errorCode, errorMessage);
     }
 
     public List<LoanApplication> findUserApplication(String accountName, LocalDateTime from, LocalDateTime till) {

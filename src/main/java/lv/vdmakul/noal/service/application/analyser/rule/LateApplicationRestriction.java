@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Order(2)
 public class LateApplicationRestriction implements ValidationRule {
 
+    public static final String ERROR_CODE = "loan.application.max.amount.after.midnight";
+
     @Value("${loan.analysis.application.max.amount}")
     protected BigDecimal maxAmount;
     @Value("${loan.analysis.application.restricted.time.from}")
@@ -41,7 +43,7 @@ public class LateApplicationRestriction implements ValidationRule {
                 return AnalysisResult.valid();
             }
         }
-        return AnalysisResult.invalid("Too late for today"); //fixme and externalize messages
+        return AnalysisResult.invalid(ERROR_CODE);
     }
 }
 
