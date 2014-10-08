@@ -70,7 +70,7 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        ResultActions asd = mockMvc.perform(
+        ResultActions applicationResponse = mockMvc.perform(
                 get("/applications")
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
@@ -81,7 +81,7 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
                 .andExpect(jsonPath("[0].term").value("2014-01-01"))
                 .andExpect(jsonPath("[0].loanId", notNullValue()));
 
-        Integer loanId = JsonPath.read(asd.andReturn().getResponse().getContentAsString(), "[0].loanId");
+        Integer loanId = JsonPath.read(applicationResponse.andReturn().getResponse().getContentAsString(), "[0].loanId");
         mockMvc.perform(
                 get("/loan/" + loanId)
                         .principal(testPrincipal)

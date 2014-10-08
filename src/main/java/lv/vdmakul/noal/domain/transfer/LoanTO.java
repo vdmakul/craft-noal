@@ -7,12 +7,20 @@ public class LoanTO implements Serializable {
 
     private static final long serialVersionUID = 6796045029552402957L;
 
+    private final Long id;
     private final BigDecimal amount;
     private final String term;
+    private final Boolean active;
 
-    public LoanTO(BigDecimal amount, String term) {
+    public LoanTO(Long id, BigDecimal amount, String term, Boolean active) {
+        this.id = id;
         this.amount = amount;
         this.term = term;
+        this.active = active;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public BigDecimal getAmount() {
@@ -21,5 +29,9 @@ public class LoanTO implements Serializable {
 
     public String getTerm() {
         return term;
+    }
+
+    public Boolean getActive() {
+        return active;
     }
 }

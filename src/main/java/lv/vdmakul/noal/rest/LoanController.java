@@ -1,10 +1,11 @@
 package lv.vdmakul.noal.rest;
 
 import lv.vdmakul.noal.domain.Loan;
-import lv.vdmakul.noal.domain.repository.LoanRepository;
 import lv.vdmakul.noal.domain.transfer.LoanTO;
 import lv.vdmakul.noal.service.application.LoanApplicationService;
 import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
+import lv.vdmakul.noal.service.loan.LoanNotFoundException;
+import lv.vdmakul.noal.service.loan.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -17,20 +18,19 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class LoanController {
 
     @Autowired
-    private LoanRepository loanRepository;
-    @Autowired
     private LoanApplicationService loanApplicationService;
+    @Autowired
+    private LoanService loanService;
 
     @RequestMapping(value = "/loan/{id}", method = RequestMethod.GET)
     public LoanTO findLoan(@PathVariable("id") Long loanId) {
-        Loan loan = loanRepository.findOne(loanId);
-        return loan.toTransferObject(); //todo check for null
+        Loan loan = loanService.findLoan(loanId);
+        return loan.toTransferObject();
     }
 
     @RequestMapping(value = "/loan/apply", method = RequestMethod.POST)
@@ -43,10 +43,16 @@ public class LoanController {
         return loan.toTransferObject();
     }
 
+    @RequestMapping(value = "/loan/{id}/extend", method = RequestMethod.POST)
+    public LoanTO extendLoan(@PathVariable("id") Long loanId, Authentication authentication) {
+        WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+        Loan newLoan = loanApplicationService.extendLoan(loanId, authentication.getName(), details.getRemoteAddress());
+        return newLoan.toTransferObject();
+    }
+
     @RequestMapping(value = "/loans", method = RequestMethod.GET)
     public List<LoanTO> findAll() {
-        Iterable<Loan> all = loanRepository.findAll();
-        return StreamSupport.stream(all.spliterator(), false)
+        return loanService.findAllLoans().stream()
                 .map(Loan::toTransferObject)
                 .collect(Collectors.toList());
     }
@@ -55,6 +61,13 @@ public class LoanController {
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public ErrorInfo handleRiskAnalysisFailException(HttpServletRequest req, RiskAnalysisFailException ex) {
+        return new ErrorInfo(ex.getMessage(), ex.getErrorCode());
+    }
+
+    @ExceptionHandler(LoanNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseBody
+    public ErrorInfo handleLoanNotFoundException(HttpServletRequest req, RiskAnalysisFailException ex) {
         return new ErrorInfo(ex.getMessage(), ex.getErrorCode());
     }
 
