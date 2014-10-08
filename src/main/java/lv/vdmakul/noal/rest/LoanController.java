@@ -28,8 +28,8 @@ public class LoanController {
     private LoanService loanService;
 
     @RequestMapping(value = "/loan/{id}", method = RequestMethod.GET)
-    public LoanTO findLoan(@PathVariable("id") Long loanId) {
-        Loan loan = loanService.findLoan(loanId);
+    public LoanTO findLoan(@PathVariable("id") Long loanId, Authentication authentication) {
+        Loan loan = loanService.findLoan(loanId, authentication.getName());
         return loan.toTransferObject();
     }
 
@@ -51,8 +51,8 @@ public class LoanController {
     }
 
     @RequestMapping(value = "/loans", method = RequestMethod.GET)
-    public List<LoanTO> findAll() {
-        return loanService.findAllLoans().stream()
+    public List<LoanTO> findAll(Authentication authentication) {
+        return loanService.findAllLoans(authentication.getName()).stream()
                 .map(Loan::toTransferObject)
                 .collect(Collectors.toList());
     }

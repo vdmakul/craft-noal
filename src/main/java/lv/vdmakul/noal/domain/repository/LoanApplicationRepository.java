@@ -13,4 +13,6 @@ public interface LoanApplicationRepository extends CrudRepository<LoanApplicatio
             "where application.userAccount = ?1 and application.applicationTime between ?2 and ?3")
     List<LoanApplication> findByIpAddressAndPeriod(String userAccount, LocalDateTime from, LocalDateTime till);
 
+    List<LoanApplication> findByUserAccount(String userAccount);
+
 }

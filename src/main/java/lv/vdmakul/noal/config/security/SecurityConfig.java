@@ -11,16 +11,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired private UserDetailsService userDetailsService;
-
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
                 .antMatchers("/user/create").permitAll()
-//                .antMatchers("/applications").authenticated()
-//                .antMatchers("/loan/**").authenticated()
                 .anyRequest().authenticated();
         http
                 .csrf().disable()
@@ -28,6 +26,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .permitAll();
-//        http.userDetailsService(userDetailsService);
     }
 }

@@ -4,16 +4,20 @@ import lv.vdmakul.noal.domain.User;
 import lv.vdmakul.noal.domain.transfer.UserTO;
 import lv.vdmakul.noal.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController {
 
     @Autowired private UserService userService;
 
-    @RequestMapping(value = "/user/{userAccount}", method = RequestMethod.GET)
-    public UserTO findUser(@PathVariable("userAccount") String accountName) {
-        User user = userService.find(accountName);
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public UserTO findUser(Authentication authentication) {
+        User user = userService.find(authentication.getName());
         return user.toTransferObject();
     }
 

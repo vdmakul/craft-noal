@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class LoanService {
@@ -23,18 +21,17 @@ public class LoanService {
         return loan;
     }
 
-    public Loan findLoan(Long loanId) {
+    public Loan findLoan(Long loanId, String userAccount) {
         Loan loan = loanRepository.findOne(loanId);
-        if (loan != null) {
+        if (loan != null && userAccount.equals(loan.getUserAccount())) {
             return loan;
         } else {
             throw new LoanNotFoundException("Loan not found", loanId);
         }
     }
 
-    public List<Loan> findAllLoans() {
-        return StreamSupport.stream(loanRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
+    public List<Loan> findAllLoans(String userAccount) {
+        return loanRepository.findByUserAccount(userAccount);
     }
 
     public void deactivateByExtension(Loan loan, Loan extensionLoan) {

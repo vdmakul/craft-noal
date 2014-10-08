@@ -37,7 +37,7 @@ public class LoanApplicationService {
 
     @Transactional
     public Loan extendLoan(Long loanId, String userAccount, String ipAddress) {
-        Loan previousLoan = loanService.findLoan(loanId);
+        Loan previousLoan = loanService.findLoan(loanId, userAccount);
         BigDecimal newAmount = previousLoan.getAmount().multiply(defaultExtensionInterest);
         LocalDate newTerm = previousLoan.getTerm().plusDays(defaultLoanExtensionDays).toLocalDate();
 
@@ -66,6 +66,10 @@ public class LoanApplicationService {
 
     public List<LoanApplication> findUserApplication(String accountName, LocalDateTime from, LocalDateTime till) {
         return loanApplicationRepository.findByIpAddressAndPeriod(accountName, from, till);
+    }
+
+    public List<LoanApplication> findByUserAccount(String userAccount) {
+        return loanApplicationRepository.findByUserAccount(userAccount);
     }
 
 }
