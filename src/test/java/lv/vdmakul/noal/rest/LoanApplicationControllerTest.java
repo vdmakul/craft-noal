@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -109,5 +110,39 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
                 .andExpect(jsonPath("[0].amount").value(1000000000.01))
                 .andExpect(jsonPath("[0].term").value("2014-01-01"))
                 .andExpect(jsonPath("[0].loanId", nullValue()));
+    }
+
+    @Test
+    public void shouldFindApplicationAfterLoanExtension() throws Exception {
+        ResultActions applyResponse = mockMvc.perform(
+                post("/loan/apply?amount=50.00&term=2014-01-01")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        Integer loanId = JsonPath.read(applyResponse.andReturn().getResponse().getContentAsString(), "id");
+
+        mockMvc.perform(
+                post("/loan/" + loanId + "/extend")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        mockMvc.perform(
+                get("/applications")
+                        .principal(testPrincipal)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("[0].amount").value(50.00))
+                .andExpect(jsonPath("[0].term").value("2014-01-01"))
+                .andExpect(jsonPath("[0].loanId").value(loanId))
+
+                .andExpect(jsonPath("[1].amount").value(75.00))
+                .andExpect(jsonPath("[1].term").value("2014-01-15"))
+                .andExpect(jsonPath("[1].loanId").value(notNullValue()))
+                .andExpect(jsonPath("[1].loanId").value(not(loanId)));
     }
 }

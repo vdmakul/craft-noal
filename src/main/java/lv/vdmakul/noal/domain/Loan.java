@@ -20,7 +20,7 @@ public class Loan {
     protected LoanApplication loanApplication;
     protected String userAccount;
     protected Boolean active;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     protected Loan extensionLoan;
 
     protected Loan() {
