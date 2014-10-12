@@ -35,7 +35,7 @@ public class ApplicationCountPerDayValidation implements ValidationRule {
         String ipAddress = application.getIpAddress();
         long count = applications.stream().filter(app -> ipAddress.equals(app.getIpAddress())).count();
 
-        if (count > maxApplicationCount) {
+        if (count >= maxApplicationCount) {
             return AnalysisResult.invalid(ERROR_CODE);
         } else {
             return AnalysisResult.valid();

@@ -34,8 +34,7 @@ public class ApplicationCountPerDayValidationTest {
 
         Mockito.doReturn(Arrays.asList(
                 loanFrom("ip", applicationTime.minusHours(1)),
-                loanFrom("ip", applicationTime.minusHours(2)),
-                loanFrom("ip", applicationTime.minusHours(3))))
+                loanFrom("ip", applicationTime.minusHours(2))))
                 .when(loanApplicationServiceMock).findUserApplication("user", applicationTime.minusHours(24), applicationTime);
 
         assertTrue(validation.analyze(loanFrom("ip", applicationTime)).isValid());
@@ -48,8 +47,7 @@ public class ApplicationCountPerDayValidationTest {
         Mockito.doReturn(Arrays.asList(
                 loanFrom("ip", applicationTime.minusHours(1)),
                 loanFrom("ip", applicationTime.minusHours(2)),
-                loanFrom("ip", applicationTime.minusHours(3)),
-                loanFrom("another ip", applicationTime.minusHours(4))))
+                loanFrom("another ip", applicationTime.minusHours(3))))
                 .when(loanApplicationServiceMock).findUserApplication("user", applicationTime.minusHours(24), applicationTime);
 
         assertTrue(validation.analyze(loanFrom("ip", applicationTime)).isValid());
@@ -63,8 +61,7 @@ public class ApplicationCountPerDayValidationTest {
                 loanFrom("ip", applicationTime.minusHours(1)),
                 loanFrom("ip", applicationTime.minusHours(2)),
                 loanFrom("ip", applicationTime.minusHours(3)),
-                loanFrom("ip", applicationTime.minusHours(4)),
-                loanFrom("another ip", applicationTime.minusHours(5))))
+                loanFrom("another ip", applicationTime.minusHours(4))))
                 .when(loanApplicationServiceMock).findUserApplication("user", applicationTime.minusHours(24), applicationTime);
 
         assertFalse(validation.analyze(loanFrom("ip", applicationTime)).isValid());
