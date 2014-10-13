@@ -17,7 +17,7 @@ apply plugin: 'war'
 sourceCompatibility = 1.8
 version = '0.1'
 
-mainClassName = "lv.vdmakul.noal.App"
+mainClassName = "lv.vdmakul.noal.ConsoleApp"
 
 war {
     baseName = "noal"
