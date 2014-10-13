@@ -1,7 +1,7 @@
 package lv.vdmakul.noal.domain.repository;
 
+import lv.vdmakul.noal.config.CoreConfig;
 import lv.vdmakul.noal.config.PersistenceConfig;
-import lv.vdmakul.noal.config.WebApp;
 import lv.vdmakul.noal.domain.LoanApplication;
 import lv.vdmakul.noal.domain.User;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebApp.class, PersistenceConfig.class})
+@ContextConfiguration(classes = {CoreConfig.class, PersistenceConfig.class})
 public class LoanApplicationRepositoryTest {
 
     @Autowired

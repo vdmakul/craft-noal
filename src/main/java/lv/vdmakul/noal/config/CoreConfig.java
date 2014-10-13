@@ -14,7 +14,7 @@ import org.springframework.core.annotation.Order;
 @ComponentScan({"lv.vdmakul.noal.rest", "lv.vdmakul.noal.service"})
 @PropertySource("classpath:application.properties")
 @Order(1)
-public class WebApp {
+public class CoreConfig {
 
     @Bean
     public MessageSource messageSource() {

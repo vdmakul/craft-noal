@@ -1,8 +1,8 @@
 package lv.vdmakul.noal.rest;
 
 import com.jayway.jsonpath.JsonPath;
+import lv.vdmakul.noal.config.CoreConfig;
 import lv.vdmakul.noal.config.PersistenceConfig;
-import lv.vdmakul.noal.config.WebApp;
 import lv.vdmakul.noal.domain.repository.LoanApplicationRepository;
 import lv.vdmakul.noal.domain.repository.LoanRepository;
 import org.junit.After;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebApp.class, PersistenceConfig.class})
+@ContextConfiguration(classes = {CoreConfig.class, PersistenceConfig.class})
 @WebAppConfiguration
 public class LoanControllerTest extends SecurityEnabledControllerTest {
 
