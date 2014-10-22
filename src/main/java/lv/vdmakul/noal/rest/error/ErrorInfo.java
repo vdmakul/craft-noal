@@ -1,4 +1,4 @@
-package lv.vdmakul.noal.rest;
+package lv.vdmakul.noal.rest.error;
 
 public class ErrorInfo {
 

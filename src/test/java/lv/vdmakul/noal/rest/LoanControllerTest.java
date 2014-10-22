@@ -117,7 +117,7 @@ public class LoanControllerTest extends SecurityEnabledControllerTest {
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().is(403))
                 .andExpect(jsonPath("errorCode").value("loan.application.max.amount"));
     }
 

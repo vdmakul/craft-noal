@@ -98,7 +98,7 @@ public class LoanApplicationControllerTest extends SecurityEnabledControllerTest
                 post("/loan/apply?amount=1000000000.01&term=2014-01-01")
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is(403));
 
         mockMvc.perform(
                 get("/applications")

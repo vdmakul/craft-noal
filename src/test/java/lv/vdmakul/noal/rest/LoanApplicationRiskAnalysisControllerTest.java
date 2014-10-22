@@ -55,7 +55,7 @@ public class LoanApplicationRiskAnalysisControllerTest extends SecurityEnabledCo
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().is(403))
                 .andExpect(jsonPath("errorCode").value("loan.application.max.amount"));
     }
 
@@ -79,7 +79,7 @@ public class LoanApplicationRiskAnalysisControllerTest extends SecurityEnabledCo
                         .principal(testPrincipal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().is(403))
                 .andExpect(jsonPath("errorCode").value("loan.application.max.count.for.period"));
     }
 

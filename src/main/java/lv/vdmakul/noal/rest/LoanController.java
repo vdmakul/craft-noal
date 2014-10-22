@@ -3,17 +3,13 @@ package lv.vdmakul.noal.rest;
 import lv.vdmakul.noal.domain.Loan;
 import lv.vdmakul.noal.domain.transfer.LoanTO;
 import lv.vdmakul.noal.service.application.LoanApplicationService;
-import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
-import lv.vdmakul.noal.service.loan.LoanNotFoundException;
 import lv.vdmakul.noal.service.loan.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -56,19 +52,4 @@ public class LoanController {
                 .map(Loan::toTransferObject)
                 .collect(Collectors.toList());
     }
-
-    @ExceptionHandler(RiskAnalysisFailException.class)
-    @ResponseStatus(value = HttpStatus.OK)
-    @ResponseBody
-    public ErrorInfo handleRiskAnalysisFailException(HttpServletRequest req, RiskAnalysisFailException ex) {
-        return new ErrorInfo(ex.getMessage(), ex.getErrorCode());
-    }
-
-    @ExceptionHandler(LoanNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.OK)
-    @ResponseBody
-    public ErrorInfo handleLoanNotFoundException(HttpServletRequest req, RiskAnalysisFailException ex) {
-        return new ErrorInfo(ex.getMessage(), ex.getErrorCode());
-    }
-
 }
