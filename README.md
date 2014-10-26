@@ -42,4 +42,3 @@ responses list of all logged user loan applications
 TODOs
 -----
  * ~~HATEOAS application to API~~: why not to do this [link](http://www.jeffknupp.com/blog/2014/06/03/why-i-hate-hateoas/)
- * Integration tests extraction
