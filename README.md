@@ -3,8 +3,6 @@ craft-noal
 
 REST service application for [initial task](doc/task.md)
 
-Demo version may be accessed on [demo server](http://vdmakul.ddns.net:8080/noal)
-
 API
 ---
 
@@ -36,9 +34,4 @@ request for specified by *id* loan extension
 responses list of all logged user loans   
 
  * **/applications** GET  
-responses list of all logged user loan applications  
-
-
-TODOs
------
- * ~~HATEOAS application to API~~: why not to do this [link](http://www.jeffknupp.com/blog/2014/06/03/why-i-hate-hateoas/)
+responses list of all logged user loan applications
