@@ -2,6 +2,8 @@ package lv.vdmakul.noal.rest.error;
 
 import lv.vdmakul.noal.service.application.analyser.RiskAnalysisFailException;
 import lv.vdmakul.noal.service.loan.LoanNotFoundException;
+import lv.vdmakul.noal.service.user.UserCreationException;
+import lv.vdmakul.noal.service.user.UserNotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,6 +27,20 @@ public class ErrorHandlingController {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
     public ErrorInfo handleLoanNotFoundException(HttpServletRequest req, LoanNotFoundException ex) {
+        return new ErrorInfo(ex.getMessage(), HttpStatus.NOT_FOUND.toString());
+    }
+
+    @ExceptionHandler(UserCreationException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ErrorInfo handleUserCreationException(HttpServletRequest req, UserCreationException ex) {
+        return new ErrorInfo(ex.getMessage(), HttpStatus.FORBIDDEN.toString());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorInfo handleUserNotFoundException(HttpServletRequest req, UserCreationException ex) {
         return new ErrorInfo(ex.getMessage(), HttpStatus.NOT_FOUND.toString());
     }
 
